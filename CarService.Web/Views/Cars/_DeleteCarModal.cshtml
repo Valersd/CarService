@@ -1,0 +1,24 @@
+﻿<!-- Modal -->
+@{
+    string heading = "Delete car";
+}
+<div class="modal fade" id="DeleteCar" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="DeleteDocumentForm" method="post" action="/Cars/Delete">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center text-warning" id="myModalLabel">@heading</h4>
+                </div>
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input id="carId" type="hidden" name="id" value="" />
+                    Are you sure to delete car <span id="carFormatedId"></span> with all its own repair documents?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-danger" value="Delete" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

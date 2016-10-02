@@ -1,0 +1,25 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<PartInCategoryDetails>
+
+
+<table class="table table-bordered table-condensed table-responsive">
+    <tr>
+        <th>Part</th>
+        <th>Current price</th>
+        <th>Total used</th>
+    </tr>
+    @foreach (var part in Model)
+    {
+        string discontiinued = part.IsActive ? "" : "discontinued";
+        <tr class="text-muted @discontiinued">
+            <td>@Html.DisplayFor(m => part.Name)</td>
+            <td>@Html.DisplayFor(m => part.CurrentPrice)</td>
+            <td class="text-center">@Html.DisplayFor(m => part.TotalUsedNumber)</td>
+        </tr>
+    }
+</table>
+
+    @Html.PagedListPager(Model, page => Url.Action("GetParts", "Ajax", new { id = ViewBag.Id, page = page }), 
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.ClassicPlusFirstAndLast, new AjaxOptions{ UpdateTargetId="partsTableContainer", InsertionMode = InsertionMode.Replace}))

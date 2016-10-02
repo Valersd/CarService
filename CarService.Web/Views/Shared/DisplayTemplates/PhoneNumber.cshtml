@@ -1,0 +1,15 @@
+﻿@model string
+
+@{ string result = ""; }
+@if (string.IsNullOrEmpty(Model))
+{
+    result = "unknown";
+    <span>@result</span>
+}
+else
+{
+    string reversed = new string(Model.Reverse().ToArray());
+    reversed = reversed.Insert(3, " ").Insert(7, " ");
+    result = new string(reversed.Reverse().ToArray());
+    <span>@result</span>
+}

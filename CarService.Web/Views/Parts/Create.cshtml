@@ -1,0 +1,20 @@
+﻿@model PartBase
+
+@{
+    ViewBag.Title = "Add part";
+    Layout = "~/Views/Parts/_PartBase.cshtml";
+}
+
+@section Heading{
+    <h2>@ViewBag.Title</h2>
+}
+
+@section CatalogNumber{
+<div class="form-group">
+    @Html.LabelFor(model => model.CatalogNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.CatalogNumber, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.CatalogNumber, "", new { @class = "text-danger" })
+    </div>
+</div>
+}

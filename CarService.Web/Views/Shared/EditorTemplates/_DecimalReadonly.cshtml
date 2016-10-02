@@ -1,0 +1,10 @@
+﻿@model decimal?
+
+@{
+    var currencyCulture = "bg-BG";
+    if (HttpContext.Current.Cache["currency"] != null)
+    {
+        currencyCulture = HttpContext.Current.Cache["currency"] as string;
+    }
+}
+@Html.TextBox("", String.Format(new System.Globalization.CultureInfo(currencyCulture), "{0:C}", Model), new { @class = "form-control", @readonly = "readonly" })

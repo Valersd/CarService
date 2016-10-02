@@ -1,0 +1,61 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model IPagedList<RepairDocumentSearch>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/RepairDocuments/_SearchBase.cshtml";
+
+    ViewBag.Action = "ByPart";
+    ViewBag.UrlParams = String.Format("&part={0}#panel", Request["part"]);
+}
+
+@section SearchForm{
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2 style="margin-top:28px">Search by replacement part</h2>
+        </div>
+        <div class="col-md-6" style="padding-top:21px">
+            <p>
+                <a href="~/RepairDocuments/Create" class="btn btn-block btn-info"><span style="font-weight:bolder;" class="text-uppercase">Create new repair document</span></a>
+            </p>
+        </div>
+    </div>
+
+
+    @using (Html.BeginForm("ByPart", "RepairDocuments", FormMethod.Get, new { @class = "form-horizontal well" }))
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <label for="part" class="control-label col-md-7">By catalog number</label>
+                <div col-md-3>
+                    <input type="text" name="part" id="part" value="@Request["part"]" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="button" name="searchButton" class="btn btn-danger btn-block" onclick="$(this).closest('form').submit(); $(this).blur();">Search</button>
+            </div>
+        </div>
+    
+    }
+}
+
+@section Pager{
+    @Html.PagedListPager(Model, page => Url.Action("ByPart", "RepairDocuments", new { page = page, sort = Request["sort"], part = Request["part"] }) + "#panel", PagedListRenderOptions.ClassicPlusFirstAndLast)
+}
+
+
+@if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+{
+    @Html.Partial("_DeleteDocumentModal")
+}
+
+@section scripts{
+
+}
+
+@section styles{
+
+}

@@ -1,0 +1,24 @@
+﻿<!-- Modal -->
+@{
+    string heading = "Delete category";
+}
+<div class="modal fade" id="DeleteCategory" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="DeleteDocumentForm" method="post" action="/Categories/Delete">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center text-warning" id="myModalLabel">@heading</h4>
+                </div>
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input id="categoryId" type="hidden" name="id" value="" />
+                    Are you sure to delete category <span id="categoryName"></span> with all its own replacement parts?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-danger" value="Delete" onclick="$('#DeleteCategory').modal('hide');" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

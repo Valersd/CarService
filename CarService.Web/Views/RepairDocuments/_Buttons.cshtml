@@ -1,0 +1,12 @@
+﻿@*Submit buttons*@
+<div class="row">
+    <div class="col-md-4">
+        <input type="button" class="btn btn-block btn-default" onclick="$(this).blur(); history.go(-1);" style="max-width:100%" name="submitButton" value="CANCEL" />
+    </div>
+    <div class="col-md-4">
+        <input type="submit" class="btn btn-block btn-warning" onclick="$(this).blur(); return true;" style="max-width:100%" name="submitButton" value="SAVE CURRENT" />
+    </div>
+    <div class="col-md-4">
+        <input type="submit" class="btn btn-block btn-success" onclick="$(this).blur(); return true;" style="max-width:100%" name="submitButton" value="FINISH DOCUMENT" />
+    </div>
+</div>

@@ -1,0 +1,171 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@using CarService.Web.Infrastructure.HtmlHelpers
+
+@model EmployeeDetails
+
+@{
+    ViewBag.Title = Model.FullName;
+    int page_current_served = int.Parse(Request["page_served"] ?? "1");
+    int page_current_created = int.Parse(Request["page_created"] ?? "1");
+}
+
+<div class="row" style="margin-top:20px">
+    <div class="col-md-6">
+        <h3 style="margin-top:10px">@ViewBag.Title<span class="h4" style="color:lightskyblue">&nbsp;&nbsp;&nbsp;@Html.DisplayFor(m => m.PhoneNumber)</span></h3>
+
+    </div>
+    <div class="col-md-6">
+        <a href="/Employees/Edit/@Model.Id" class="btn btn-block btn-warning text-uppercase">Edit profile</a>
+    </div>
+</div>
+
+<div>
+    <hr />
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="dl-horizontal" style="margin-bottom:0">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.UserName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DocumentsCreatedCount)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DocumentsCreatedCount)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DocumentsCreatedTotalAmount)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DocumentsCreatedTotalAmount)
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="dl-horizontal" style="margin-bottom:0">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Role)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Role)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DocumentsServedCount)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DocumentsServedCount)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DocumentsServedTotalAmount)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DocumentsServedTotalAmount)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<hr id="created" />
+<div class="panel panel-primary">
+    <div class="panel-heading text-center "><span class="h4">@Html.DisplayNameFor(m => m.CreatedRepairDocuments)</span></div>
+    <table class="table table-responsive table-striped table-bordered">
+        <tr>
+            <th class="text-center">№</th>
+            <th width="25%">Created</th>
+            <th width="25%">Finished</th>
+            <th>Mechanic</th>
+            <th>Price of parts</th>
+            <th>Total amount</th>
+            <th class="text-center">Action</th>
+        </tr>
+        @foreach (var item in Model.CreatedRepairDocuments)
+        {
+            <tr>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinishedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mechanic)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartsPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td class="text-center">
+                    @Html.ActionLink("SELECT", "Details", "RepairDocuments", new { id = item.Id }, null)
+                </td>
+
+            </tr>
+        }
+    </table>
+</div>
+
+@Html.Pager(page_created => Url.Action("Details", "Employees", new { id = Model.Id, page_created = page_created, page_served = Request["page_served"] }) + "#created", page_current_created, Model.DocumentsCreatedCount, 10)
+<hr id="served" />
+
+<div class="panel panel-primary">
+    <div class="panel-heading text-center "><span class="h4">@Html.DisplayNameFor(m => m.ServedRepairDocuments)</span></div>
+    <table class="table table-responsive table-striped table-bordered">
+        <tr>
+            <th class="text-center">№</th>
+            <th width="25%">Created</th>
+            <th width="25%">Finished</th>
+            <th>Mechanic</th>
+            <th>Price of parts</th>
+            <th>Total amount</th>
+            <th class="text-center">Action</th>
+        </tr>
+        @foreach (var item in Model.ServedRepairDocuments)
+        {
+            <tr>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinishedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mechanic)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartsPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td class="text-center">
+                    @Html.ActionLink("SELECT", "Details", "RepairDocuments", new { id = item.Id }, null)
+                </td>
+
+            </tr>
+        }
+    </table>
+</div>
+
+@Html.Pager(page_served => Url.Action("Details", "Employees", new { id = Model.Id, page_created = Request["page_created"], page_served = page_served }) + "#served", page_current_served, Model.DocumentsServedCount, 10)

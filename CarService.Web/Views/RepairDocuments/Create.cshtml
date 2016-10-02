@@ -1,0 +1,51 @@
+﻿@model RepairDocumentCreate
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/RepairDocuments/_RepairDocumentBase.cshtml";
+}
+
+@section Headings{
+    <h3>Create new repair document</h3>
+    <hr />
+}
+
+@section CarInput{
+    <div class="col-xs-5">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarRegNumber, htmlAttributes: null)
+            @Html.TextBoxFor(model => model.CarRegNumber, new { @class = "form-control", placeholder = "3 symbols min" })
+            @Html.HiddenFor(model => model.CarId)
+            <span class="text-muted h6"><em>Search for existing car</em></span><br />
+            @Html.ValidationMessageFor(model => model.CarId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-xs-7">
+        <button id="callModal" type="button" class="btn btn-info" style="margin-top:1.7em">
+            Add car
+        </button>
+        <button id="resetCar" type="button" class="btn btn-danger" style="margin-top:1.7em; display:none">
+            Reset car
+        </button>
+    </div>
+}
+
+@section Mechanics{
+<div class="form-group">
+    @Html.LabelFor(model => model.MechanicId, htmlAttributes: null)
+    @Html.DropDownListFor(model => model.MechanicId, Model.Mechanics, "-- SELECT --", new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.MechanicId, "", new { @class = "text-danger" })
+</div>
+}
+
+@section Modal{
+    @Html.Partial("_CarModal")
+}
+
+@section styles{
+    @Styles.Render("~/Content/jquery-ui-styles")
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jquery-ui")
+}

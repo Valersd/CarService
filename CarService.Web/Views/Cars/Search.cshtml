@@ -1,0 +1,128 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model IPagedList<CarSearch>
+
+@{
+    ViewBag.Title = "Cars";
+    bool showPager = Convert.ToBoolean(ViewBag.ShowPager);
+    var searchParam = "";
+    if (Request["search"] != null)
+    {
+        searchParam = "&search=" + Request["search"];
+    }
+
+    TempData["Url"] = Url.Action("Search", "Cars", new { page = Request["page"], search = Request["search"], sort = Request["sort"]});
+}
+<div class="row" style="margin-top:10px">
+    <div class="col-md-6" style="padding-top:15px">
+        <h2>Cars</h2>
+    </div>
+    <div class="col-md-6" style="padding-top:10px">
+        <div>
+            @using (@Html.BeginForm("Search", "Cars", FormMethod.Get, new { id = "searchForm", @class = "form-inline well pull-right" }))
+            {
+                <div class="form-group">
+                    <label for="search" class="control-label">By registration number</label> &nbsp;&nbsp;
+                    <input type="text" name="search" id="search" value="@ViewBag.Search" class="form-control" />&nbsp;&nbsp;
+                    <button type="button" name="searchButton" class="btn btn-danger" onclick="$('#searchForm').submit(); $(this).blur();">Search</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th width="10%">
+            <a href="~/Cars/Search?sort=@ViewBag.Number@searchParam">Car number</a>
+        </th>
+        <th width="15%" class="text-center">
+            <a href="~/Cars/Search?sort=@ViewBag.Count@searchParam">Count of repairs</a>
+        </th>
+        <th width="15%" class="text-center">
+            <a href="~/Cars/Search?sort=@ViewBag.PartsPrice@searchParam">Price of parts</a>
+        </th>
+        <th width="15%" class="text-center">
+            <a href="~/Cars/Search?sort=@ViewBag.TotalPrice@searchParam">Total price</a>
+        </th>
+        <th width="25%">
+            <a href="~/Cars/Search?sort=@ViewBag.LastRepair@searchParam">Last repair</a>
+        </th>
+        <th width="20%" class="text-center">
+            Action
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegNumber)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.RepairsCount)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.PartsPrice)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastRepairDateTime)
+            </td>
+            <td class="text-center">
+                @Html.ActionLink("SELECT", "Details", new { id = item.Id })
+                @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+                {
+                    @:&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0)" data-id="@item.Id" data-formated-id="@item.RegNumber" class="delete text-danger">DELETE</a>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+@if (showPager)
+{
+    @Html.PagedListPager(Model, page => Url.Action("Search", "Cars", new { page = page, search = Request["search"], sort = ViewBag.CurrentSort }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+}
+
+@Html.Partial("_DeleteCarModal")
+
+    @section scripts{
+        @Scripts.Render("~/bundles/jquery-ui")
+        <script type="text/javascript">
+            $(function () {
+                $('#search').autocomplete({
+                    autofocus: true,
+                    minLength: 2,
+                    delay: 500,
+                    source: '/Ajax/FindCar',
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        $(this).val(ui.item.label);
+                    }
+                });
+
+                $('table').on("click", "a.delete", function (event) {
+                    event.preventDefault();
+                    var $that = $(event.target);
+                    $that.blur();
+
+                    var carId = $that.data('id');
+                    $('#carId').val(carId);
+                    var formatedId = $that.data('formated-id');
+                    $('#carFormatedId').text(formatedId);
+
+                    $('#DeleteCar').modal('show');
+                });
+            });
+        </script>
+    }
+
+    @section styles{
+        @Styles.Render("~/Content/jquery-ui-styles")
+    }

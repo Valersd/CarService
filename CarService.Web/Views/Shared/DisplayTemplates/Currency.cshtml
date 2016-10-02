@@ -1,0 +1,11 @@
+﻿@model decimal?
+
+@if (Model.HasValue)
+{
+    var currencyCulture = "bg-BG";
+    if (HttpContext.Current.Cache["currency"] != null)
+    {
+        currencyCulture = HttpContext.Current.Cache["currency"] as string;
+    }
+    @String.Format(new System.Globalization.CultureInfo(currencyCulture), "{0:C}", Model.Value)
+}

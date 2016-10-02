@@ -1,0 +1,36 @@
+﻿@model CarCreate
+
+@{
+    Layout = "~/Views/RepairDocuments/_CarBase.cshtml";
+}
+
+@section RegNumberInput{
+    <div class="form-group">
+        @Html.LabelFor(model => model.RegNumber, htmlAttributes: new { @class = "control-label col-md-6" })
+        <div class="col-md-6">
+            @Html.EditorFor(model => model.RegNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.RegNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+
+@section EngineNumberInput{
+    <div class="form-group">
+        @Html.LabelFor(model => model.EngineNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-8">
+            @Html.EditorFor(model => model.EngineNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.EngineNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+
+@section  ChassissNumberInput{
+    <div class="form-group">
+        @Html.LabelFor(model => model.ChassisNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-8">
+            @Html.EditorFor(model => model.ChassisNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ChassisNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+

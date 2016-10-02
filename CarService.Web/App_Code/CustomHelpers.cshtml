@@ -1,0 +1,34 @@
+﻿@helper ShowHideElement(string id, bool showOnInitialization)
+{
+    @ShowHideElement(id, showOnInitialization, null)
+}
+
+@helper ShowHideElement(string id, bool showOnInitialization, string additionalCssClass)
+{
+    @ShowHideElement(id, showOnInitialization, additionalCssClass, "[ Show ]", "[ Hide ]")
+}
+
+@helper ShowHideElement(string id, bool showOnInitialization, string additionalCssClass, string textForShow, string textForHide)
+{
+    string cssClass = "show-hide-link";
+    if (!string.IsNullOrEmpty(additionalCssClass))
+    {
+        cssClass += " " + additionalCssClass;
+    }
+
+    if (showOnInitialization)
+    {
+        <a id="@id" class="@cssClass" href="javascript:void(0);">
+            <em style="display:none">@textForShow</em>
+            <em>@textForHide</em>
+
+        </a>
+    }
+    else
+    {
+        <a id="@id" class="@cssClass" href="javascript:void(0);">
+            <em>@textForShow</em>
+            <em style="display:none">@textForHide</em>
+        </a>
+    }
+}

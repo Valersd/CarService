@@ -1,0 +1,150 @@
+﻿@using Microsoft.AspNet.Identity
+
+@model RepairDocumentDetails
+
+@{
+    ViewBag.Title = "Repair document";
+    string cssClass = "text-danger";
+    string text = "UNFINISHED";
+    if (Model.FinishedOn != null)
+    {
+        cssClass = "text-success";
+        text = "FINISHED";
+    }
+}
+<div class="row">
+    <div class="col-md-6">
+        <h3>@ViewBag.Title</h3>
+        <h4>@Html.DisplayNameFor(model => model.Id)&nbsp;@Html.DisplayFor(model => model.Id)</h4>
+        <h4 class="@cssClass">@text</h4>
+        @if (Model.TotalPrice != null)
+        {
+            <h4><span>@Html.DisplayNameFor(m => m.TotalPrice)</span>&nbsp;&nbsp;<span class="text-info"><strong>@Html.DisplayFor(m => m.TotalPrice)</strong></span></h4>
+        }
+        else
+        {
+            <h4 class="text-warning">Total price is not calculated yet</h4>
+        }
+    </div>
+    <div class="col-md-6" style="margin-top:50px">
+        @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+        {
+            @Html.Partial("_DeleteDocumentModal", new ViewDataDictionary { { "id", Model.Id }, { "formatedId", Html.DisplayFor(m => m.Id) } })
+            <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#DeleteDocument" onclick="$(this).blur();">
+                <span style="font-weight:bolder;" class="text-uppercase">
+                    Delete repair document
+                </span>
+            </button>
+        }
+        @if (!Model.FinishedOn.HasValue && Model.CreatedBy.Id == User.Identity.GetUserId())
+        {
+            <a href="~/RepairDocuments/Edit/@Model.Id" class="btn btn-warning btn-block">
+                <span style="font-weight:bolder;" class="text-uppercase">
+                    Edit repair document
+                </span>
+            </a>
+        }
+    </div>
+</div>
+<div>
+    <div class="well">
+        <h4>Info</h4>
+        <hr />
+
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.CreatedOn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreatedOn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreatedBy)
+            </dd>
+
+            @if (Model.FinishedOn != null)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.FinishedOn)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.FinishedOn)
+                </dd>
+            }
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Mechanic)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Mechanic)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.RepairDescription)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.RepairDescription)
+            </dd>
+
+        </dl>
+    </div>
+
+    @Html.DisplayFor(model => model.Car)
+
+    <div class="well">
+        <h4>@Html.DisplayNameFor(model => model.Parts)</h4>
+        <hr />
+        <table class="table table-condensed table-responsive">
+            <tr>
+                <th>Catalog number</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th width="10%" class="text-center">Qty</th>
+                <th>Price</th>
+            </tr>
+            @foreach (var part in Model.Parts.OrderBy(p => p.Name))
+            {
+                var currentPrice = part.Price * part.Quantity;
+                var discontinued = part.IsActive ? "" : "discontinued";
+                <tr class="text-muted @discontinued">
+                    <td>@Html.DisplayFor(p => part.CatalogNumber)</td>
+                    <td>@Html.DisplayFor(p => part.Name)</td>
+                    <td>@Html.DisplayFor(p => part.Category)</td>
+                    <td class="text-center">@Html.DisplayFor(p => part.Quantity)</td>
+                    <td>@Html.Partial("~/Views/Shared/DisplayTemplates/Currency.cshtml", currentPrice)</td>
+                </tr>
+            }
+            <tfoot>
+                <tr style="font-size:large">
+                    <td colspan="4">
+                        @Html.DisplayNameFor(model => model.PartsPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.PartsPrice)
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+<p>
+    <a href="javascript:history.go(-1)"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>  Go Back</a>
+</p>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#showHideInfo').showHideElement('#carInfo', 'em');
+        });
+    </script>
+}

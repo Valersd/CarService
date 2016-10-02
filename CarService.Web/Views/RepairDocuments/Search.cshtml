@@ -1,0 +1,145 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model IPagedList<RepairDocumentSearch>
+
+
+
+@{
+    Layout = "~/Views/RepairDocuments/_SearchBase.cshtml";
+    ViewBag.Title = "Search";
+
+    ViewBag.Action = "Search";
+    ViewBag.UrlParams = string.Format("&type={0}&mechanic={1}&from={2}&to={3}#panel", ViewBag.Type as string, ViewBag.Mechanic as string, ViewBag.From as string, ViewBag.To as string);
+    TempData["Url"] = Url.Action("Search", "RepairDocuments", new { page = Request["page"], sort = Request["sort"], type = ViewBag.Type as string, mechanic = ViewBag.Mechanic as string, from = ViewBag.From as string, to = ViewBag.To as string }) + "#panel";
+}
+
+@section SearchForm{
+
+<div class="row">
+    <div class="col-md-6">
+        <h2 style="margin-top:28px">Search repair documents</h2>
+    </div>
+    <div class="col-md-6" style="padding-top:21px">
+        <p>
+            <a href="~/RepairDocuments/Create" class="btn btn-block btn-info"><span style="font-weight:bolder;" class="text-uppercase">Create new repair document</span></a>
+        </p>
+    </div>
+</div>
+
+@using (Html.BeginForm("Search", "RepairDocuments", FormMethod.Get, new { @class = "form-horizontal well" }))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="type" class="control-label col-md-5">By number</label>
+                <div class="col-md-7">
+                    @Html.TextBox("number", "", new { @class = "form-control" })
+                    <span class="text-muted h6"><em>Redirect to details page</em></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="type" class="control-label col-md-4">By type</label>
+                <div class="col-md-8">
+                    @Html.DropDownList("type", ViewBag.Types as IEnumerable<SelectListItem>, "ALL", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="mechanic" class="control-label col-md-4">By mechanic</label>
+                <div class="col-md-8">
+                    @Html.DropDownList("mechanic", ViewBag.Mechanics as IEnumerable<SelectListItem>, "ALL", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="from" class="control-label col-md-4">From date</label>
+                <div class="col-md-8">
+                    @Html.TextBox("from", ViewBag.From as string, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="to" class="control-label col-md-3">To date</label>
+                <div class="col-md-9">
+                    @Html.TextBox("to", ViewBag.To as string, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <input type="submit" id="Search" name="Search" value="Search" onclick="$(this).blur()" class="btn btn-danger btn-block pull-right" />
+        </div>
+    </div>
+}
+
+}
+
+@section Pager{
+    @Html.PagedListPager(Model, page => Url.Action("Search", "RepairDocuments", new { page = page, sort = Request["sort"], type = ViewBag.Type as string, mechanic = ViewBag.Mechanic as string, from = ViewBag.From as string, to = ViewBag.To as string }) + "#panel", PagedListRenderOptions.ClassicPlusFirstAndLast)
+}
+
+
+@if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+{
+    @Html.Partial("_DeleteDocumentModal")
+}
+
+@section scripts{
+
+    @Scripts.Render("~/bundles/timezone-offset")
+    @Scripts.Render("~/bundles/globalize")
+    @if (System.Threading.Thread.CurrentThread.CurrentCulture.Name != "bg-BG")
+    {
+        <script src="@String.Format("/Scripts/globalize/cultures/globalize.culture.{0}.js", System.Threading.Thread.CurrentThread.CurrentCulture.Name)"></script>
+    }
+    @if (Cache["currency"] != null && Cache["currency"] as string != System.Threading.Thread.CurrentThread.CurrentCulture.Name)
+    {
+        <script src="@String.Format("/Scripts/globalize/cultures/globalize.culture.{0}.js", Cache["currency"] as string)"></script>
+    }
+
+    @Scripts.Render("~/bundles/jquery-ui")
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#mechanicName').text($('#mechanic option:selected').text());
+            $('#documentsType').text($('#type option:selected').text());
+
+            $('#number').autocomplete({
+                autofocus: true,
+                minLength: 1,
+                delay: 500,
+                source: "/Ajax/FindDocumentByNumber",
+                select: function (event, ui) {
+                    window.location = '/RepairDocuments/Details?id=' + ui.item.value;
+                }
+            });
+
+            var cultureDatepicker = $('html').prop('lang').split('-')[0];
+            var cultureGlobalize = $('html').prop('lang');
+            $.datepicker.setDefaults($.datepicker.regional[cultureDatepicker]);
+            $('#from').datepicker({
+                defaultDate: '-1m',
+                dateFormat: Globalize.culture(cultureGlobalize).calendar.patterns.D.replace('dddd', 'DD').replace('MMMM', 'MM').replace('yyyy', 'yy'),
+                minDate: '-3y',
+                maxDate: new Date()
+            });
+            $('#to').datepicker({
+                defaultDate: new Date(),
+                dateFormat: Globalize.culture(cultureGlobalize).calendar.patterns.D.replace('dddd', 'DD').replace('MMMM', 'MM').replace('yyyy', 'yy'),
+                maxDate: '0',
+            });
+
+        });
+    </script>
+}
+
+@section styles{
+    @Styles.Render("~/Content/jquery-ui-styles")
+}

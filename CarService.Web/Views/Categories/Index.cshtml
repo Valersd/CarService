@@ -1,0 +1,109 @@
+﻿@model IEnumerable<CategoryIndex>
+
+@{
+    ViewBag.Title = "Categories";
+}
+
+
+@if (TempData["Message"] != null)
+{
+    @Html.Partial("_CategoryMessage", new ViewDataDictionary { { "Message", TempData["Message"] }, { "CssClass", TempData["CssClass"]} })
+}
+
+<div class="row" style="margin-bottom:6px">
+    <div class="col-md-6">
+        <h2>@ViewBag.Title</h2>
+    </div>
+    <div class="col-md-6" style="padding-top:20px">
+        @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+        {
+            <a href="/Categories/Create" class="btn btn-block btn-info text-uppercase">Add new category</a>
+        }
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <table id="categories" class="table table-bordered table-condensed table-responsive table-striped">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th class="text-center">Action</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr data-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" class="details btn btn-success btn-xs" role="button">DETAILS</a>
+                            @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+                            {
+                                <a href="/Categories/Edit/@item.Id" class="btn btn-warning btn-xs" role="button" style="width:60px">EDIT</a>
+                                <button type="button" class="delete btn btn-danger btn-xs">DELETE</button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+    <div id="partsContainer" class="col-md-6">
+
+    </div>
+</div>
+
+@Html.Partial("_DeleteCategoryModal")
+
+@section scripts{
+    @Scripts.Render("~/bundles/jquery-ajax")
+
+        <script type="text/javascript">
+            $(function () {
+                if ($('#messageContainer')) {
+                    if ($('#message').hasClass('text-success')) {
+                        $('#messageContainer').slideDown(1000).delay(1000).slideUp(1000);
+                    }
+                    else {
+                        $('#messageContainer').slideDown(1000);
+                    }
+                }
+
+                $('#categories').on('click', '.details', function (event) {
+                    event.preventDefault();
+                    var $that = $(event.target);
+                    $that.blur();
+                    var id = $that.parent().parent().parent().data('id');
+                    $.ajax({
+                        url: '/Ajax/CategoryDetails',
+                        data: { id: id },
+                        success: function (result) {
+                            $('#partsContainer').slideUp(500, function () {
+                                $(this).html(result);
+                                $(this).slideDown(500);
+                            });
+                        }
+                    });
+                });
+
+                $('#categories').on('click', '.delete', function (event) {
+                    event.preventDefault();
+                    var $that = $(event.target);
+                    $that.blur();
+
+                    var tr = $that.parent().parent().parent();
+                    var id = tr.data('id');
+                    var name = $(tr).children()[0].innerText;
+                    $('#categoryId').val(id);
+                    $('#categoryName').text(name.trim());
+                    $('#DeleteCategory').modal('show');
+                })
+            });
+        </script>
+}

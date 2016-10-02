@@ -1,0 +1,116 @@
+﻿@model CarInRepairDocumentDetails
+
+<div class="well">
+    <h4>
+        Car info&nbsp;&nbsp;
+        @CustomHelpers.ShowHideElement("showHideInfo", true)
+    </h4>
+    <hr />
+    <div id="carInfo">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="dl-horizontal">
+                    <dt style="padding-top:5px">
+                        @Html.DisplayNameFor(model => model.RegNumber)
+                    </dt>
+
+                    <dd style="font-size:large" class="text-warning">
+                        @Html.DisplayFor(model => model.RegNumber)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ChassisNumber)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.ChassisNumber)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EngineNumber)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EngineNumber)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Vendor)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Vendor)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Model)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Model)
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.OwnerPhone)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.OwnerPhone)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.OwnerName)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.OwnerName)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EngineCapacity)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EngineCapacity)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Year)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Year)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Color)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Color)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Description)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        }
+    </div>
+</div>

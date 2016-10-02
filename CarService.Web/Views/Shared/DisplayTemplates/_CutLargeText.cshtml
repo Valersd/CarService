@@ -1,0 +1,19 @@
+﻿@model string
+
+@{
+    int length = 30;
+    if (ViewData.ModelMetadata.AdditionalValues.ContainsKey("Length"))
+    {
+        length = int.Parse(ViewData.ModelMetadata.AdditionalValues["Length"].ToString());
+    }
+
+}
+
+@if (Model.Length < length)
+{
+    <span style="white-space:nowrap" title="@Model">@Model</span>
+}
+else
+{
+    <span style="white-space:nowrap" title="@Model">@Model.Substring(0, length)&hellip;</span>
+}

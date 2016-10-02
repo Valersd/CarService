@@ -1,0 +1,66 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<RepairDocumentHomeIndex>
+
+@{
+    ViewBag.Title = "Active repair documents";
+}
+
+<h3 class="text-center">@ViewBag.Title</h3>
+
+<p>
+    <a href="~/RepairDocuments/Create" class="btn btn-block btn-info"><span style="font-weight:bolder;" class="text-uppercase">Create new repair document</span></a>
+</p>
+<table class="table table-bordered table-striped table-responsive">
+    <tr>
+        <th class="text-center">
+            <a id="number" class="sort" href="~/Home/Index?sort=@ViewBag.Number">Number&nbsp;&nbsp;</a>
+        </th>
+        <th class="text-center">
+            <a id="car" class="sort" href="~/Home/Index?sort=@ViewBag.Car">Car&nbsp;&nbsp;</a>
+        </th>
+        <th class="text-center">
+            <a id="description" class="sort" href="~/Home/Index?sort=@ViewBag.Description">Repair description&nbsp;&nbsp;</a>
+        </th>
+        <th class="text-center">
+            <a id="created" class="sort" href="~/Home/Index?sort=@ViewBag.CreatedBy">Created by&nbsp;&nbsp;</a>
+        </th>
+        <th class="text-center">
+            <a id="mechanic" class="sort" href="~/Home/Index?sort=@ViewBag.Mechanic">Mechanic&nbsp;&nbsp;</a>
+        </th>
+        <th class="text-center">
+            Action
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="text-center vertical-center">
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td class="text-center vertical-center">
+                @Html.DisplayFor(modelItem => item.CarRegNumber)
+            </td>
+            <td width="45%" class="text-justify">
+                @Html.DisplayFor(modelItem => item.RepairDescription)
+            </td>
+            <td class="text-center vertical-center">
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td class="text-center vertical-center">
+                @Html.DisplayFor(modelItem => item.Mechanic)
+            </td>
+            <td class="text-center vertical-center">
+                @Html.ActionLink("SELECT", "Details", "RepairDocuments", new { id = item.Id }, null)
+            </td>
+        </tr>
+    }
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", "Home", new { page = page, sort = ViewBag.CurrentSort }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+
+@*@section scripts{
+    @Scripts.Render("~/bundles/homeindex")
+}*@

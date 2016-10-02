@@ -1,0 +1,25 @@
+﻿@using System;@model PartInRepairDocumentDetails
+
+@{
+    string discontinued = Model.IsActive ? "" : "discontinued";
+    Model.Price *= Model.Quantity;
+}
+<tr data-id="@Model.Id" class="text-muted @discontinued">
+    <td>
+        @Html.DisplayFor(p => Model.CatalogNumber)
+        @Html.HiddenFor(p => Model.Id)
+    </td>
+    <td>@Html.DisplayFor(p => Model.Name)</td>
+    <td class="text-center">
+        @Html.DisplayFor(p => Model.Quantity)
+        @Html.HiddenFor(p => Model.Quantity)
+    </td>
+    <td>
+        @Html.DisplayFor(p => Model.Price)
+        @Html.EditorFor(p => Model.Price)
+    </td>
+    <td class="text-center">
+        <button class="removePart btn btn-sm btn-default">Remove</button>
+    </td>
+</tr>
+

@@ -1,0 +1,83 @@
+﻿@model RepairDocumentBase
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Message")
+
+@RenderSection("Headings", false)
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken();
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @RenderSection("IdHiddenInput", false)
+
+    @*Description*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.RepairDescription, htmlAttributes: null)&nbsp;&nbsp;
+        @CustomHelpers.ShowHideElement("showHideDescription", true)
+        <div class="description">
+            @Html.EditorFor(model => model.RepairDescription)
+            @Html.ValidationMessageFor(model => model.RepairDescription, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            @RenderSection("CreatedOnInput", false)
+            <div class="row">
+                @RenderSection("CarInput", true)
+            </div>
+            @RenderSection("Mechanics", true)
+            
+            <div class="form-group parts-price-container">
+                @Html.LabelFor(model => model.PartsPrice, htmlAttributes: null)
+                @Html.EditorFor(model => model.PartsPrice)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalPrice)
+                @Html.EditorFor(model => model.TotalPrice, new { htmlAttributes = new { @class = "form-control" } })
+                <span class="text-muted h6"><em>Enter price with separator "@System.Globalization.CultureInfo.CreateSpecificCulture(Cache["currency"] as string).NumberFormat.CurrencyDecimalSeparator"</em></span><br />
+                @Html.ValidationMessageFor(model => model.TotalPrice, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-sm-8">
+
+            @Html.Partial("_CurrentParts", Model)
+
+        </div>
+    </div>
+
+    @Html.Partial("_Buttons")
+}
+<br />
+@Html.Partial("_Categories", Model.Categories)
+
+@RenderSection("Modal", true)
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/timezone-offset")
+    @Scripts.Render("~/bundles/globalize")
+    @if (System.Threading.Thread.CurrentThread.CurrentCulture.Name != "bg-BG")
+    {
+        <script src="@String.Format("/Scripts/globalize/cultures/globalize.culture.{0}.js", System.Threading.Thread.CurrentThread.CurrentCulture.Name)"></script>
+    }
+    @if (Cache["currency"] != null && Cache["currency"] as string != System.Threading.Thread.CurrentThread.CurrentCulture.Name)
+    {
+        <script src="@String.Format("/Scripts/globalize/cultures/globalize.culture.{0}.js", Cache["currency"] as string)"></script>
+    }
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/document-car-create-edit-functionality")
+
+    @RenderSection("scripts", false)
+}
+
+@section styles{
+    @RenderSection("styles", false)
+}
+
+

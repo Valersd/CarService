@@ -1,0 +1,6 @@
+﻿@model DateTime?
+
+@if (Model.HasValue)
+{
+    @Html.TextBox("", String.Format(System.Threading.Thread.CurrentThread.CurrentCulture, "{0:f}", Model.Value), new { @class = "form-control", @readonly = "readonly" })
+}

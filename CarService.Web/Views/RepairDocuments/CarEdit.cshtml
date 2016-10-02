@@ -1,0 +1,9 @@
+﻿@model CarEdit
+@{
+    ViewBag.Title = "CarEdit";
+    Layout = "~/Views/RepairDocuments/_CarBase.cshtml";
+}
+@section IdHiddenInput{
+    @Html.HiddenFor(model => model.Id)
+}
+

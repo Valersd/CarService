@@ -1,0 +1,24 @@
+﻿@model IEnumerable<PartInRepairDocumentDetails>
+
+<table id="categoryParts" class="table table-condensed table-responsive table-bordered">
+    <tr>
+        <th width="25%">Catalog number</th>
+        <th width="45%">Name</th>
+        <th width="20%">Price</th>
+        <th width="10%" class="text-center">Action</th>
+    </tr>
+    @foreach (var part in Model)
+    {
+        var discontinued = part.IsActive ? "" : "discontinued";
+        var disabled = part.IsActive ? "" : "disabled=disabled";
+        var buttonClasses = part.IsActive ? "btn-default addPart" : "discontinued";
+        <tr data-id="@part.Id" class="text-muted @discontinued">
+            <td class="catalogNumber">@Html.DisplayFor(p => part.CatalogNumber)</td>
+            <td class="partName">@Html.DisplayFor(p => part.Name)</td>
+            <td class="price" data-price="@part.Price">@Html.DisplayFor(p => part.Price)</td>
+            <td class="text-center">
+                <input type="button" name="add" value="Add" class="btn btn-sm btn-block @buttonClasses" @disabled />
+            </td>
+        </tr>
+    }
+    </table>

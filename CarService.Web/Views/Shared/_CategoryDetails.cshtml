@@ -1,0 +1,61 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model CategoryIndexExtended
+
+<div class="panel panel-primary" style="margin-bottom:15px;">
+    <!-- Default panel contents -->
+    <div class="panel-heading text-center">@Html.DisplayFor(m => m.Name)</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal" style="margin-bottom:0">
+            <dt>
+                @Html.DisplayNameFor(model => model.PartsCount)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PartsCount)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.TotalUsedPartsNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TotalUsedPartsNumber)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.TotalUsedPartsAmount)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TotalUsedPartsAmount)
+            </dd>
+
+        </dl>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-bordered table-condensed table-responsive">
+        <tr>
+            <th>Part</th>
+            <th width="20%">Current price</th>
+            <th width="15%">Total used</th>
+        </tr>
+        @foreach (var part in Model.Parts)
+        {
+            string discontiinued = part.IsActive ? "" : "discontinued";
+            <tr class="text-muted @discontiinued">
+                <td>@Html.DisplayFor(m => part.Name)</td>
+                <td>@Html.DisplayFor(m => part.CurrentPrice)</td>
+                <td class="text-center">@Html.DisplayFor(m => part.TotalUsedNumber)</td>
+            </tr>
+        }
+    </table>
+
+</div>
+@Html.PagedListPager(Model.Parts, page => Url.Action("CategoryDetails", "Ajax", new { id = Model.Id, page = page }),
+             PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.ClassicPlusFirstAndLast, new AjaxOptions { UpdateTargetId = "partsContainer", InsertionMode = InsertionMode.Replace }))
+<div>
+
+</div>

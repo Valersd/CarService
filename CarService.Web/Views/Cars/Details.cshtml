@@ -1,0 +1,132 @@
+﻿@model CarDetails
+
+@{
+    ViewBag.Title = Model.RegNumber;
+    ViewBag.heading = Model.RegNumber;
+}
+
+@Html.Partial("_Message")
+
+<div class="row" style="margin-top:5px">
+    <div class="col-md-6">
+        <h2 style="margin-bottom:0; margin-top:25px">Details @Model.RegNumber</h2>
+    </div>
+    <div class="col-md-6" style="padding-top:20px">
+        <button id="callModal" data-id="@Model.Id" class="btn btn-warning btn-block text-uppercase">Edit car</button>
+    </div>
+</div>
+<hr />
+
+<div id="carContainer">
+    @Html.Partial("~/Views/Shared/DisplayTemplates/CarInRepairDocumentDetails.cshtml", Model)
+</div>
+
+<div>
+    <h3>@Html.DisplayNameFor(model => model.RepairDocuments)</h3>
+    <hr />
+    @foreach (var document in Model.RepairDocuments.OrderByDescending(d => d.CreatedOn))
+    {
+        <div class="well">
+            <a href="/RepairDocuments/Details/@document.Id"><h4><strong>@Html.DisplayNameFor(m => document.Id) @Html.DisplayFor(m => document.Id)</strong></h4></a>
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(m => document.CreatedOn)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(m => document.CreatedOn)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(m => document.FinishedOn)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(m => document.FinishedOn)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(m => document.CreatedBy)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(m => document.CreatedBy)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(m => document.Mechanic)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(m => document.Mechanic)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div>
+                <dl class=" dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(m => document.RepairDescription)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(m => document.RepairDescription)
+                    </dd>
+                </dl>
+            </div>
+            <table class="table table-condensed table-responsive table-bordered">
+                <tr>
+                    <th width="15%">Catalog number</th>
+                    <th width="35%">Name</th>
+                    <th width="35%">Category</th>
+                    <th width="5%" class="text-center">Qty</th>
+                    <th width="10%">Price</th>
+                </tr>
+                @foreach (var part in document.Parts.OrderBy(p => p.Name))
+                {
+                    var currentPrice = part.Price * part.Quantity;
+                    var discontinued = part.IsActive ? "" : "discontinued";
+                    <tr class="text-muted @discontinued">
+                        <td>@Html.DisplayFor(p => part.CatalogNumber)</td>
+                        <td>@Html.DisplayFor(p => part.Name)</td>
+                        <td>@Html.DisplayFor(p => part.Category)</td>
+                        <td class="text-center">@Html.DisplayFor(p => part.Quantity)</td>
+                        <td>@Html.Partial("~/Views/Shared/DisplayTemplates/Currency.cshtml", currentPrice)</td>
+                    </tr>
+                }
+                <tfoot>
+                    <tr style="font-size:large">
+                        <td colspan="4">
+                            @Html.DisplayNameFor(model => document.PartsPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => document.PartsPrice)
+                        </td>
+                    </tr>
+                    <tr style="font-size:large">
+                        <td colspan="4">
+                            @Html.DisplayNameFor(model => document.TotalPrice)
+                        </td>
+                        <td class="text-success">
+                            @Html.DisplayFor(model => document.TotalPrice)
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    }
+
+</div>
+
+@Html.Partial("_CarModal")
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/Custom/car-modal.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#showHideInfo').showHideElement('#carInfo', 'em');
+        });
+    </script>
+}

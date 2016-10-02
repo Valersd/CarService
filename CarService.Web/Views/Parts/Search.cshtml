@@ -1,0 +1,135 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model IPagedList<PartSearch>
+
+@{
+    ViewBag.Title = "Parts";
+    var list = ViewBag.Results as IEnumerable<SelectListItem>;
+    string urlParams = string.Format("&catId={0}&search={1}&stock={2}&count={3}", Request["catId"], Request["search"], Request["stock"], Model.Count);
+    TempData["Url"] = Url.Action("Search", "Parts", new { page = Request["page"], catId = Request["catId"], search = Request["search"], stock = Request["stock"], sort = Request["sort"], count = Request["count"] });
+}
+
+<div class="row" style="margin-bottom:6px">
+    <div class="col-md-6">
+        <h2>Search replacement parts</h2>
+    </div>
+    <div class="col-md-6" style="padding-top:20px">
+        @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+        {
+            <a href="/Parts/Create" class="btn btn-block btn-info text-uppercase">Add new replacement part</a>
+        }
+    </div>
+</div>
+
+@using (Html.BeginForm("Search", "Parts", FormMethod.Get, new { @class = "form-horizontal well" }))
+{
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="search" class="control-label col-md-5">By name or number</label>
+                <div class="col-md-7">
+                    <input type="text" name="search" value="@Request["search"]" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="catId" class="control-label col-md-4">By category</label>
+                <div class="col-md-8">
+                    @Html.DropDownList("catId", ViewBag.Categories as IEnumerable<SelectListItem>, "-- ALL --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="stock" class="control-label col-md-5">Stock</label>
+                <div class="col-md-7">
+                    @Html.DropDownList("stock", ViewBag.Stock as IEnumerable<SelectListItem>, "-- ALL --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 col-md-offset-4">
+            <div class="form-group">
+                <label for="Count" class="control-label col-md-9">Results per page</label>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => Model.Count, ViewBag.Results as IEnumerable<SelectListItem>, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-md-offset-1">
+            <button class="btn btn-danger btn-block" onclick="$('form').closest().submit();(this).blur();">Search</button>
+        </div>
+    </div>
+}
+
+<div class="text-muted h6">
+    <div class="discontinued" style="width:10px;height:10px; display:inline-block"></div>&nbsp;&nbsp;
+    <em>Out of stock</em>
+</div>
+<table id="searchParts" class="table table-responsive table-bordered">
+    <tr>
+        <th width="10%">
+            <a href="/Parts/Search?sort=@ViewBag.Number@urlParams">Catalog number</a>
+        </th>
+        <th width="30%">
+            <a href="/Parts/Search?sort=@ViewBag.Name@urlParams">Name</a>
+        </th>
+        <th width="30%">
+            <a href="/Parts/Search?sort=@ViewBag.Category@urlParams">Category</a>
+        </th>
+        <th width="10%">
+            <a href="/Parts/Search?sort=@ViewBag.Price@urlParams">Current price</a>
+        </th>
+        <th width="5%">
+            <a href="/Parts/Search?sort=@ViewBag.Used@urlParams">Total used number</a>
+        </th>
+        <th width="10%">
+            <a href="/Parts/Search?sort=@ViewBag.TotalPrice@urlParams">Total amount</a>
+        </th>
+        @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+        {
+            <th width="5%">
+                Action
+            </th>
+        }
+    </tr>
+
+
+
+    @foreach (var item in Model)
+    {
+        string discontinued = item.IsActive ? "" : "discontinued";
+        <tr class="@discontinued">
+            <td>
+                @Html.DisplayFor(modelItem => item.CatalogNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentPrice)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.TotalUsedNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            @if (User.IsInRole(CarService.Common.GlobalConstants.AdminRole))
+            {
+                <td class="text-center">
+                    @Html.ActionLink("EDIT", "Edit", new { id = item.Id })
+                </td>
+            }
+        </tr>
+    }
+
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("Search", "Parts", new { page = page, catId = Request["catId"], search = Request["search"], stock = Request["stock"], count = Model.Count, sort = Request["sort"] }) + "#Count", PagedListRenderOptions.ClassicPlusFirstAndLast)

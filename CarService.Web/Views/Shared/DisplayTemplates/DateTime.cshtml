@@ -1,0 +1,6 @@
+﻿@model DateTime?
+
+@if (Model.HasValue)
+{
+    @String.Format(System.Threading.Thread.CurrentThread.CurrentCulture, "{0:f}", Model.Value)
+}

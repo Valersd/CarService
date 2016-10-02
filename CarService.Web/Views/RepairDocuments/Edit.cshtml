@@ -1,0 +1,50 @@
+﻿@model RepairDocumentEdit
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/RepairDocuments/_RepairDocumentBase.cshtml";
+}
+
+@section Headings{
+    <h3>Edit document</h3>
+    <h3>@Html.DisplayNameFor(model => model.Id)&nbsp;@Html.DisplayFor(model => model.Id)</h3>
+    <hr />
+}
+
+@section IdHiddenInput{
+    @Html.HiddenFor(m => m.Id)
+}
+
+@section CreatedOnInput{
+    <div class="form-group">
+        @Html.LabelFor(model => model.CreatedOn, htmlAttributes: null)
+        @Html.EditorFor(model => model.CreatedOn)
+    </div>
+}
+
+@section CarInput{
+    <div class="col-xs-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarRegNumber, htmlAttributes: null)
+            @Html.EditorFor(model => model.CarRegNumber)
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <button id="callModal" data-id="@Model.CarId" type="button" class="btn btn-info" style="margin-top:1.7em">
+            Edit car
+        </button>
+    </div>
+}
+
+@section Mechanics{
+<div class="form-group">
+    @Html.LabelFor(model => model.MechanicId, htmlAttributes: null)
+    @Html.DropDownListFor(model => model.MechanicId, Model.Mechanics, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.MechanicId, "", new { @class = "text-danger" })
+</div>
+}
+
+@section Modal{
+    @Html.Partial("_CarModal", new ViewDataDictionary { { "heading", Model.CarRegNumber } })
+}
+
+
