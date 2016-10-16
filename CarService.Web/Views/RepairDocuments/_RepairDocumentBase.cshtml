@@ -17,7 +17,8 @@
     @*Description*@
     <div class="form-group">
         @Html.LabelFor(model => model.RepairDescription, htmlAttributes: null)&nbsp;&nbsp;
-        @CustomHelpers.ShowHideElement("showHideDescription", true)
+        @*@CustomHelpers.ShowHideElement("showHideDescription", true)*@
+        @ShowHideElement.ShowHide("showHideDescription", true, null, "[ Show ]", "[ Hide ]")
         <div class="description">
             @Html.EditorFor(model => model.RepairDescription)
             @Html.ValidationMessageFor(model => model.RepairDescription, "", new { @class = "text-danger" })

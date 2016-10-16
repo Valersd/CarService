@@ -3,7 +3,8 @@
 <div class="well">
     <h4>
         Car info&nbsp;&nbsp;
-        @CustomHelpers.ShowHideElement("showHideInfo", true)
+        @*@CustomHelpers.ShowHideElement("showHideInfo", true)*@
+        @ShowHideElement.ShowHide("showHideInfo", true, null, "[ Show ]", "[ Hide ]")
     </h4>
     <hr />
     <div id="carInfo">
